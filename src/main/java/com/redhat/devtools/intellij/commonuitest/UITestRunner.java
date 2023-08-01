@@ -16,6 +16,7 @@ import com.intellij.remoterobot.stepsProcessing.StepWorker;
 import com.intellij.remoterobot.utils.WaitForConditionTimeoutException;
 import com.redhat.devtools.intellij.commonuitest.exceptions.UITestException;
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.FlatWelcomeFrame;
+import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.MainIdeWindow;
 import com.redhat.devtools.intellij.commonuitest.utils.runner.IntelliJVersion;
 
 import java.io.File;
@@ -92,6 +93,35 @@ public class UITestRunner {
         });
     }
 
+    public static RemoteRobot runIdeAfterRestart(IntelliJVersion ideaVersion, int port) {
+        StepWorker.registerProcessor(new StepLogger());
+
+        return step("Start IntelliJ Idea ('" + ideaVersion.toString() + "') listening on port " + port, () -> {
+            System.setProperty("uitestlib.idea.version", Integer.toString(ideaVersion.toInt()));
+            UITestRunner.ideaVersion = ideaVersion;
+
+            acceptAllTermsAndConditions();
+            if (ideaVersion.isUltimate()) {
+                activateEvaluateForFree();
+            }
+
+            String fileExtension = OS_NAME.contains("windows") ? ".bat" : "";
+            ProcessBuilder pb = new ProcessBuilder("." + File.separator + "gradlew" + fileExtension, "runIdeForUiTests", "-PideaVersion=" + ideaVersion, "-Drobot-server.port=" + port);
+
+            try {
+                ideProcess = pb.start();
+                waitUntilIntelliJStarts(port);
+                remoteRobot = getRemoteRobotConnectionAfterRestart(port);
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+
+            remoteRobot.find(FlatWelcomeFrame.class, Duration.ofSeconds(10)).clearWorkspace();
+            return remoteRobot;
+        });
+    }
+
+
     /**
      * Start the given version of IntelliJ Idea listening on the default port
      *
@@ -161,6 +191,27 @@ public class UITestRunner {
             return remoteRobot;
         });
     }
+
+    public static RemoteRobot getRemoteRobotConnectionAfterRestart(int port) {
+        return step("Create an instance of the RemoteRobot listening on port " + port, () -> {
+            RemoteRobot remoteRobot = new RemoteRobot("http://127.0.0.1:" + port);
+            for (int i = 0; i < 60; i++) {
+                try {
+                    remoteRobot.find(MainIdeWindow.class);
+                } catch (WaitForConditionTimeoutException e) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e2) {
+                        LOGGER.log(Level.SEVERE, e2.getMessage(), e2);
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+
+            return remoteRobot;
+        });
+    }
+
 
     private static void acceptAllTermsAndConditions() {
         String osxPlistSourceLocation;
