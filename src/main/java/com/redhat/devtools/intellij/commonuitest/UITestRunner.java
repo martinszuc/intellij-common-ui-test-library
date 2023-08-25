@@ -146,10 +146,8 @@ public class UITestRunner {
      * @return instance of the RemoteRobot
      */
     public static RemoteRobot getRemoteRobotConnection(int port) {
-        return step("Create an instance of the RemoteRobot listening on port " + port, () -> {
-            RemoteRobot remoteRobot = new RemoteRobot("http://127.0.0.1:" + port);
-            return remoteRobot;
-        });
+        return step("Create an instance of the RemoteRobot listening on port " + port, () ->
+                new RemoteRobot("http://127.0.0.1:" + port));
     }
 
     /**
@@ -168,8 +166,7 @@ public class UITestRunner {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 Thread.currentThread().interrupt();
             }
-            remoteRobot = runIde(ideaVersion, port);
-            return remoteRobot;
+            return runIde(ideaVersion, port);
         });
     }
 
