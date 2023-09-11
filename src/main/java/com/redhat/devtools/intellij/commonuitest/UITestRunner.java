@@ -176,9 +176,7 @@ public class UITestRunner {
     private static void findWindowOnStart() {
         boolean foundWindow = false;
         int tries = 0;
-        // Check for MainIdeWindow if FlatWelcomeFrame was not found
         do {
-            // Check for FlatWelcomeFrame
             try {
                 remoteRobot.find(FlatWelcomeFrame.class, Duration.ofSeconds(5));
                 foundWindow = true;
