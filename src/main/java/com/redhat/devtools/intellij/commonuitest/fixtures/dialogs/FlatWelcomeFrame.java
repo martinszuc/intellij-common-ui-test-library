@@ -22,6 +22,7 @@ import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.settings.Setti
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.settings.pages.NotificationsPage;
 import com.redhat.devtools.intellij.commonuitest.utils.constants.ButtonLabels;
 import com.redhat.devtools.intellij.commonuitest.utils.constants.XPathDefinitions;
+import com.redhat.devtools.intellij.commonuitest.utils.project.CreateCloseUtils;
 import com.redhat.devtools.intellij.commonuitest.utils.runner.IntelliJVersion;
 import com.redhat.devtools.intellij.commonuitest.utils.steps.SharedSteps;
 import org.apache.commons.io.FileUtils;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
@@ -89,13 +91,15 @@ public class FlatWelcomeFrame extends CommonContainerFixture {
     public void clearWorkspace() {
         // Remove projects on disk
         try {
-            String pathToDirToMakeEmpty = System.getProperty("user.home") + File.separator + "IdeaProjects";
+            String pathToDirToMakeEmpty = CreateCloseUtils.PROJECT_LOCATION;
             boolean doesProjectDirExists = Files.exists(Paths.get(pathToDirToMakeEmpty));
             if (doesProjectDirExists) {
                 FileUtils.cleanDirectory(new File(pathToDirToMakeEmpty));
             } else {
                 Files.createDirectory(Paths.get(pathToDirToMakeEmpty));
             }
+        } catch (NoSuchFileException e) {
+            LOGGER.log(Level.INFO, "No such file exists, nothing to do.");
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
