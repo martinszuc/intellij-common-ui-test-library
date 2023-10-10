@@ -25,6 +25,7 @@ import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.idestatu
 
 import java.io.File;
 import java.time.Duration;
+import java.util.Optional;
 
 /**
  * Project creation utilities
@@ -32,7 +33,9 @@ import java.time.Duration;
  * @author zcervink@redhat.com
  */
 public class CreateCloseUtils {
-    public static final String PROJECT_LOCATION = System.getProperty("user.home") + File.separator + "IdeaProjects" + File.separator + "intellij-ui-test-projects";
+    public static final String PROJECT_LOCATION = Optional.ofNullable(System.getProperty("testProjectLocation"))
+            .filter(s -> !s.isEmpty())
+            .orElseGet(() -> System.getProperty("user.home") + File.separator + "IdeaProjects" + File.separator + "intellij-ui-test-projects");
 
     /**
      * Create new project with given project name according to given project type
