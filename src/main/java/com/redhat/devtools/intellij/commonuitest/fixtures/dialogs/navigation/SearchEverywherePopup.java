@@ -24,6 +24,8 @@ import com.redhat.devtools.intellij.commonuitest.exceptions.UITestException;
 import com.redhat.devtools.intellij.commonuitest.utils.constants.XPathDefinitions;
 import com.redhat.devtools.intellij.commonuitest.utils.texttranformation.TextUtils;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.event.KeyEvent;
 import java.time.Duration;
@@ -42,6 +44,8 @@ import static com.intellij.remoterobot.utils.RepeatUtilsKt.waitFor;
 @FixtureName(name = "Search Everywhere Popup")
 public class SearchEverywherePopup extends CommonContainerFixture {
     private final RemoteRobot remoteRobot;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchEverywherePopup.class);
+
 
     public SearchEverywherePopup(@NotNull RemoteRobot remoteRobot, @NotNull RemoteComponent remoteComponent) {
         super(remoteRobot, remoteComponent);
@@ -67,12 +71,42 @@ public class SearchEverywherePopup extends CommonContainerFixture {
      * @param cmdToEnter command that will be invoked using the search field
      */
     public void invokeCmd(String cmdToEnter) {
-        JTextFieldFixture searchField = textField(JTextFieldFixture.Companion.byType(), Duration.ofSeconds(10));
-        searchField.click();
-        searchField.setText(cmdToEnter);
+        insertToSearchField(cmdToEnter);
         waitFor(Duration.ofSeconds(30), Duration.ofSeconds(1), "The search in the Search Everywhere popup did not finish in 30 seconds.", () -> didSearchFinish(cmdToEnter));
         new Keyboard(remoteRobot).hotKey(KeyEvent.VK_ENTER);
     }
+
+    public void checkAndUpdateSetting(String settingName, String desiredState) {
+        insertToSearchField(settingName);
+        waitFor(Duration.ofSeconds(30), Duration.ofSeconds(1), "The search in the Search Everywhere popup did not finish in 30 seconds.", () -> didSearchFinish(settingName));
+
+        JListFixture resultsList = this.find(JListFixture.class, byXpath(XPathDefinitions.JBLIST));
+        String oppositeState = desiredState.equals("ON") ? "OFF" : "ON";
+
+        try {
+            resultsList.findText(desiredState);
+            new Keyboard(remoteRobot).hotKey(KeyEvent.VK_ESCAPE);
+            LOGGER.info("SearchEverywhere: Setting is already set to desired state.");
+        } catch (Exception e) {
+            try {
+                resultsList.findText(oppositeState).click();
+                new Keyboard(remoteRobot).hotKey(KeyEvent.VK_ESCAPE);
+                LOGGER.info("SearchEverywhere: Setting set to desired state!.");
+            } catch (Exception ex) {
+                throw new UITestException("Neither '" + desiredState + "' nor '" + oppositeState + "' component can be found.");
+            }
+        }
+    }
+
+
+
+
+    private void insertToSearchField(String cmdToEnter) {
+        JTextFieldFixture searchField = textField(JTextFieldFixture.Companion.byType(), Duration.ofSeconds(10));
+        searchField.click();
+        searchField.setText(cmdToEnter);
+    }
+
 
     private boolean didSearchFinish(String cmdToInvoke) {
         String searchResultsString = TextUtils.listOfRemoteTextToString(getSearchResults());

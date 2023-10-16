@@ -92,7 +92,7 @@ public class MainIdeWindow extends CommonContainerFixture {
         searchEverywherePopup.invokeCmd(cmdToInvoke);
     }
 
-    private SearchEverywherePopup openSearchEverywherePopup(String tab) {
+    public SearchEverywherePopup openSearchEverywherePopup(String tab) {
         try {
             SearchEverywherePopup searchEverywherePopup = find(SearchEverywherePopup.class, Duration.ofSeconds(10));
             searchEverywherePopup.activateTab(tab);

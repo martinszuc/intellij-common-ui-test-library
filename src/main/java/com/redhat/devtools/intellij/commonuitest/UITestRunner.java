@@ -16,7 +16,9 @@ import com.intellij.remoterobot.stepsProcessing.StepWorker;
 import com.intellij.remoterobot.utils.WaitForConditionTimeoutException;
 import com.redhat.devtools.intellij.commonuitest.exceptions.UITestException;
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.FlatWelcomeFrame;
+import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.navigation.SearchEverywherePopup;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.MainIdeWindow;
+import com.redhat.devtools.intellij.commonuitest.utils.project.CreateCloseUtils;
 import com.redhat.devtools.intellij.commonuitest.utils.runner.IntelliJVersion;
 
 import java.io.File;
@@ -89,7 +91,6 @@ public class UITestRunner {
             }
 
             findWindowOnStart();
-
             return remoteRobot;
         });
     }
@@ -159,6 +160,13 @@ public class UITestRunner {
      */
     public static RemoteRobot restartIde(IntelliJVersion ideaVersion, int port) {
         return step("Restart IntelliJ Idea ('" + ideaVersion.toString() + "') listening on port " + port, () -> {
+
+            MainIdeWindow mainIdeWindow = remoteRobot.find(MainIdeWindow.class, Duration.ofSeconds(10));
+            SearchEverywherePopup searchEverywherePopup = mainIdeWindow.openSearchEverywherePopup("All");
+            searchEverywherePopup.checkAndUpdateSetting("Reopen projects on startup","OFF");
+            searchEverywherePopup = mainIdeWindow.openSearchEverywherePopup("All");
+            searchEverywherePopup.checkAndUpdateSetting("Reopen projects on startup","ON");
+
             closeIde();
             try {
                 Thread.sleep(5000); // Wait for 5 seconds for the process to end properly
@@ -172,30 +180,29 @@ public class UITestRunner {
 
     private static void findWindowOnStart() {
         boolean foundWindow = false;
-
-        // Check for FlatWelcomeFrame
-        try {
-            remoteRobot.find(FlatWelcomeFrame.class, Duration.ofSeconds(60)).clearWorkspace();
-            foundWindow = true;
-        } catch (WaitForConditionTimeoutException e) {
-            LOGGER.log(Level.INFO, e.getMessage(), e);
-        }
-
-        // Check for MainIdeWindow if FlatWelcomeFrame was not found
-        if (!foundWindow) {
+        int tries = 0;
+        do {
             try {
-                remoteRobot.find(MainIdeWindow.class, Duration.ofSeconds(60));
+                remoteRobot.find(FlatWelcomeFrame.class, Duration.ofSeconds(5));
                 foundWindow = true;
             } catch (WaitForConditionTimeoutException e) {
-                LOGGER.log(Level.WARNING, e.getMessage(), e);
+                LOGGER.log(Level.INFO, e.getMessage(), e);
+                try {
+                    // Check for MainIdeWindow
+                    remoteRobot.find(MainIdeWindow.class, Duration.ofSeconds(5));
+                } catch (WaitForConditionTimeoutException e2) {
+                    LOGGER.log(Level.WARNING, e.getMessage(), e2);
+                }
             }
-        }
+            tries++;
+        } while(!foundWindow || tries < 6);
 
         if (!foundWindow) {
             LOGGER.log(Level.SEVERE, "Neither FlatWelcomeFrame nor MainIdeWindow found. Exiting application.");
             throw new IllegalStateException("Neither FlatWelcomeFrame nor MainIdeWindow found.");
         }
     }
+
 
     private static void acceptAllTermsAndConditions() {
         String osxPlistSourceLocation;
