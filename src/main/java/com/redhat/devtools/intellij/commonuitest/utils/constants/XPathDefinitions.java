@@ -76,6 +76,8 @@ public class XPathDefinitions {
     public static final String EXTENDABLE_TEXT_FIELD = "//div[@class='ExtendableTextField']";
     public static final String JBTEXT_FIELD = "//div[@class='JBTextField']";
     public static final String REMOVE_PROJECT_BUTTON = "//div[contains(@text.key, 'button.remove')]";
+    public static final String REMOVE_PROJECT_BUTTON_20232 = "//div[@text='Remove']";
+
     public static final String SET_LANGUAGE = "//div[@class='SegmentedButtonComponent'][.//div[contains(@action.key, 'language.groovy')]]";
     public static final String SET_BUILD_SYSTEM = "//div[@class='SegmentedButtonComponent'][.//div[@action.key='buildsystem.type.intellij']]";
     public static final String GET_SET_MODULE_NAME = "//div[@accessiblename='Module name:' and @accessiblename.key='label.project.wizard.new.project.module.name' and @class='JBTextField']";
