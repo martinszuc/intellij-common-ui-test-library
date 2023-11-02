@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     testImplementation 'com.redhat.devtools.intellij:intellij-common-ui-test-library'
+    testImplementation 'org.junit.platform:junit-platform-launcher:1.8.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
@@ -29,6 +30,12 @@ patchPluginXml {
       <em>most HTML tags may be used</em>"""
 }
 
+tasks.register('copyKey', Copy) {
+    from "idea_license_token/idea.key"
+    into "build/idea-sandbox/config-uiTest"
+}
+
 test {
+    dependsOn tasks.named('copyKey')
     useJUnitPlatform()
 }
