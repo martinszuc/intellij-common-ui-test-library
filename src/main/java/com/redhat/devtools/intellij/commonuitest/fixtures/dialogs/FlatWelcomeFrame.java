@@ -30,6 +30,7 @@ import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.errors.IdeFata
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.information.TipDialog;
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.settings.SettingsDialog;
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.settings.pages.NotificationsPage;
+import com.redhat.devtools.intellij.commonuitest.utils.steps.SharedSteps;
 import com.redhat.devtools.intellij.commonuitest.utils.constants.XPathDefinitions;
 import com.redhat.devtools.intellij.commonuitest.utils.internalerror.IdeInternalErrorUtils;
 import com.redhat.devtools.intellij.commonuitest.utils.runner.IntelliJVersion;
@@ -156,7 +157,12 @@ public class FlatWelcomeFrame extends CommonContainerFixture {
      * @return fixture for the 'Tip Of the Day' dialog
      */
     public TipDialog openTipDialog() {
-        if (ideaVersion <= 20202) {
+        if (ideaVersion <= 20232) { // TODO Check against 2022.2/.3
+            FlatWelcomeFrame flatWelcomeFrame = remoteRobot.find(FlatWelcomeFrame.class, Duration.ofSeconds(2));
+            flatWelcomeFrame.findText("Learn").click();
+            SharedSteps.waitForComponentByXpath(remoteRobot,2, byXpath(XPathDefinitions.TIP_DIALOG_2));
+            flatWelcomeFrame.findText(TIP_OF_THE_DAY).click();
+        } else if (ideaVersion <= 20202) {
             clickOnLink("Get Help");
             HeavyWeightWindowFixture heavyWeightWindowFixture = find(HeavyWeightWindowFixture.class, Duration.ofSeconds(5));
             heavyWeightWindowFixture.findText(TIP_OF_THE_DAY).click();
