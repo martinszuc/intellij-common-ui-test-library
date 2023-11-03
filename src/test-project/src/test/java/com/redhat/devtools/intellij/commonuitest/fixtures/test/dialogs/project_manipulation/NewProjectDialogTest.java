@@ -346,12 +346,15 @@ public class NewProjectDialogTest extends LibraryTestBase {
     public void selectNewProjectTypeTest() {
         newProjectFirstPage.selectNewProjectType("Empty Project");
         boolean isEmptyProjectPageDisplayed;
-        if (ideaVersionInt < 20213) {
-            isEmptyProjectPageDisplayed = !newProjectFirstPage.findAll(JListFixture.class, byXpath(XPathDefinitions.EMPTY_PROJECT)).isEmpty();
-        } else if (ideaVersionInt < 20221) {
+
+        if (ideaVersionInt >= 20232) {
+            isEmptyProjectPageDisplayed = newProjectFirstPage.hasText("A basic project with free structure.");
+        } else if (ideaVersionInt >= 20221) {
+            isEmptyProjectPageDisplayed = newProjectFirstPage.hasText("A basic project that allows working with separate files and compiling Java and Kotlin classes.");
+        } else if (ideaVersionInt >= 20213) {
             isEmptyProjectPageDisplayed = newProjectFirstPage.hasText("Simple project with one module");
         } else {
-            isEmptyProjectPageDisplayed = newProjectFirstPage.hasText("A basic project that allows working with separate files and compiling Java and Kotlin classes.");
+            isEmptyProjectPageDisplayed = !newProjectFirstPage.findAll(JListFixture.class, byXpath(XPathDefinitions.EMPTY_PROJECT)).isEmpty();
         }
         assertTrue(isEmptyProjectPageDisplayed, "The 'Empty Project' page should be displayed but is not.");
 
