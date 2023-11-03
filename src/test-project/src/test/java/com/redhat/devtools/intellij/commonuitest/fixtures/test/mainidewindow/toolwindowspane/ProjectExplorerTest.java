@@ -18,6 +18,8 @@ import com.intellij.remoterobot.utils.Keyboard;
 import com.redhat.devtools.intellij.commonuitest.LibraryTestBase;
 import com.redhat.devtools.intellij.commonuitest.UITestRunner;
 import com.redhat.devtools.intellij.commonuitest.exceptions.UITestException;
+import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.navigation.NavBarItemComponentFixture;
+import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.navigation.NewNavBarPanelFixture;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.toolwindowspane.AbstractToolWinPane;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.toolwindowspane.ProjectExplorer;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.toolwindowspane.ToolWindowPane;
@@ -81,13 +83,9 @@ class ProjectExplorerTest extends LibraryTestBase {
         projectExplorer.openFile(PROJECT_NAME, PROJECT_NAME + ".iml");
 
         if (ideaVersionInt >= 20232) {
-            ComponentFixture editorTabLabel;
-            try {
-                editorTabLabel = remoteRobot.find(EditorFixture.class, byXpath("//div[@accessiblename='" + PROJECT_NAME + ".iml' and @class='EditorTabLabel']"));
-                assertTrue(editorTabLabel.isShowing(), "The '" + PROJECT_NAME + ".iml' file should be opened but is not.");
-            } catch (Exception ignored) {
-                fail("The '" + PROJECT_NAME + ".iml' file should be opened but is not.");
-            }
+            NewNavBarPanelFixture navBarPanel = remoteRobot.find(NewNavBarPanelFixture.class, Duration.ofSeconds(1));
+            NavBarItemComponentFixture navBarItem = navBarPanel.getNavBarItemComponents().get(1);
+            assertTrue(navBarItem.hasText(PROJECT_NAME + ".iml"));
         } else {    // Code for < IJ 2023.2
             List<ContainerFixture> cfs = remoteRobot.findAll(ContainerFixture.class, byXpath(XPathDefinitions.SINGLE_HEIGHT_LABEL));
             ContainerFixture cf = cfs.get(cfs.size() - 1);

@@ -59,7 +59,7 @@ public class ProjectExplorer extends CommonContainerFixture {
      * @param path path to navigate through
      */
     public void openFile(String... path) {
-        projectViewTree().expand(path);
+//        projectViewTree().expand(path);
         path[0] = projectViewTree().getValueAtRow(0);
         projectViewTree().doubleClickPath(path, true);
     }
