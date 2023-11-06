@@ -83,6 +83,13 @@ public class FlatWelcomeFrame extends CommonContainerFixture {
     }
 
     /**
+     * Click on the 'Empty Project'  link
+     */
+    public void createEmptyProject() {
+        clickOnLink("Empty Project");
+    }
+
+    /**
      * Click on the link according to given label
      *
      * @param label label of the link to click on

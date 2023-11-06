@@ -81,12 +81,7 @@ public class CreateCloseUtils {
 
         newProjectDialogWizard.finish();
 
-        IdeStatusBar ideStatusBar = remoteRobot.find(IdeStatusBar.class, Duration.ofSeconds(10));
-        ideStatusBar.waitUntilProjectImportIsComplete();
-        MainIdeWindow mainIdeWindow = remoteRobot.find(MainIdeWindow.class, Duration.ofSeconds(5));
-        mainIdeWindow.maximizeIdeWindow();
-        ideStatusBar.waitUntilAllBgTasksFinish(500);
-        CodeWithMeDialog.closeCodeWithMePopupIfItAppears(remoteRobot);
+        waitForMainWindowToLoad(remoteRobot);
     }
 
     /**
@@ -113,6 +108,24 @@ public class CreateCloseUtils {
     }
 
     /**
+     * Create new Empty project with given project name
+     *
+     * @param remoteRobot    reference to the RemoteRobot instance
+     * @param projectName    name of new project
+     */
+    public static void createEmptyProject(RemoteRobot remoteRobot, String projectName) {
+        NewProjectDialogWizard newProjectDialogWizard = openNewProjectDialogFromWelcomeDialog(remoteRobot);
+        NewProjectFirstPage newProjectFirstPage = newProjectDialogWizard.find(NewProjectFirstPage.class, Duration.ofSeconds(10));
+        newProjectFirstPage.selectNewProjectType("Empty Project");
+
+        newProjectFirstPage.setProjectName(projectName);
+        newProjectFirstPage.setProjectLocation(PROJECT_LOCATION);
+        newProjectDialogWizard.finish();
+
+        waitForMainWindowToLoad(remoteRobot);
+    }
+
+    /**
      * Get appropriate final page instance
      *
      * @param newProjectDialogWizard instance of the 'New Project' dialog fixture
@@ -129,6 +142,15 @@ public class CreateCloseUtils {
             default:
                 throw new UITestException("Unsupported project type.");
         }
+    }
+
+    private static void waitForMainWindowToLoad(RemoteRobot remoteRobot) {
+        IdeStatusBar ideStatusBar = remoteRobot.find(IdeStatusBar.class, Duration.ofSeconds(10));
+        ideStatusBar.waitUntilProjectImportIsComplete();
+        MainIdeWindow mainIdeWindow = remoteRobot.find(MainIdeWindow.class, Duration.ofSeconds(5));
+        mainIdeWindow.maximizeIdeWindow();
+        ideStatusBar.waitUntilAllBgTasksFinish(500);
+        CodeWithMeDialog.closeCodeWithMePopupIfItAppears(remoteRobot);
     }
 
     /**
