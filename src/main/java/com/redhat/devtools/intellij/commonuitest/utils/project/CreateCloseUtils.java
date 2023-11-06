@@ -11,6 +11,7 @@
 package com.redhat.devtools.intellij.commonuitest.utils.project;
 
 import com.intellij.remoterobot.RemoteRobot;
+import com.intellij.remoterobot.fixtures.JTreeFixture;
 import com.redhat.devtools.intellij.commonuitest.UITestRunner;
 import com.redhat.devtools.intellij.commonuitest.exceptions.UITestException;
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.FlatWelcomeFrame;
@@ -22,9 +23,14 @@ import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.project.pages.
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.project.pages.NewProjectFirstPage;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.MainIdeWindow;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.idestatusbar.IdeStatusBar;
+import com.redhat.devtools.intellij.commonuitest.utils.constants.XPathDefinitions;
 
+import java.awt.*;
 import java.io.File;
 import java.time.Duration;
+import java.util.logging.Logger;
+
+import static com.intellij.remoterobot.search.locators.Locators.byXpath;
 import java.util.Optional;
 
 /**
@@ -36,6 +42,9 @@ public class CreateCloseUtils {
     public static final String PROJECT_LOCATION = Optional.ofNullable(System.getProperty("testProjectLocation"))
             .filter(s -> !s.isEmpty())
             .orElseGet(() -> System.getProperty("user.home") + File.separator + "IdeaProjects" + File.separator + "intellij-ui-test-projects");
+
+    protected static final Logger LOGGER = Logger.getLogger(CreateCloseUtils.class.getName());
+
 
     /**
      * Create new project with given project name according to given project type
@@ -68,7 +77,6 @@ public class CreateCloseUtils {
 
         if (UITestRunner.getIdeaVersionInt() >= 20221) {
             newProjectFirstPage.setProjectName(projectName);
-            newProjectFirstPage.setProjectLocation(PROJECT_LOCATION);
         } else {
             newProjectDialogWizard.next();
             // Plain java project has more pages in the 'New project' dialog
@@ -123,6 +131,16 @@ public class CreateCloseUtils {
         newProjectDialogWizard.finish();
 
         waitForMainWindowToLoad(remoteRobot);
+    }
+
+    public static void reopenLastProject(RemoteRobot remoteRobot) {
+        FlatWelcomeFrame flatWelcomeFrame = remoteRobot.find(FlatWelcomeFrame.class, Duration.ofSeconds(10));
+        try{
+            flatWelcomeFrame.findAll(JTreeFixture.class, byXpath(XPathDefinitions.RECENT_PROJECT_PANEL_NEW_2)).get(0).click(new Point(20,20));
+            waitForMainWindowToLoad(remoteRobot);
+        } catch (IndexOutOfBoundsException e) {
+            LOGGER.warning("Reopening last project failed: No project found!");
+        }
     }
 
     /**
