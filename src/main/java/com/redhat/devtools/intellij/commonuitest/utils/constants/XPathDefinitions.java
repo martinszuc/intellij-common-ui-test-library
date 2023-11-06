@@ -107,4 +107,8 @@ public class XPathDefinitions {
     public static String toolWindowSvg(String label) {
         return "//div[@disabledicon='toolWindow" + label + ".svg']";
     }
+
+    public static String toolWindowButton(String label) {
+        return "//div[@tooltiptext='" + label + "']";
+    }
 }
