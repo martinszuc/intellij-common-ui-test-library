@@ -9,6 +9,9 @@ import java.time.Duration;
 import static com.intellij.remoterobot.utils.RepeatUtilsKt.waitFor;
 
 public class SharedSteps {
+    private SharedSteps() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
     public static void waitForComponentByXpath(RemoteRobot robot, int duration, Locator xpath) {
         waitFor(Duration.ofSeconds(duration), () -> robot.findAll(ComponentFixture.class, xpath)
                 .stream()
