@@ -36,10 +36,8 @@ import com.redhat.devtools.intellij.commonuitest.utils.constants.XPathDefinition
 import com.redhat.devtools.intellij.commonuitest.utils.internalerror.IdeInternalErrorUtils;
 import com.redhat.devtools.intellij.commonuitest.utils.runner.IntelliJVersion;
 import org.apache.commons.io.FileUtils;
-import org.assertj.swing.fixture.DialogFixture;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
