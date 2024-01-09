@@ -25,6 +25,7 @@ public class XPathDefinitions {
     public static final String MAVEN_TOOL_WINDOW = "//div[@accessiblename='Maven Tool Window']";
     public static final String GRADLE_TOOL_WINDOW = "//div[@accessiblename='Gradle Tool Window']";
     public static final String LINUX_MAIN_MENU = "//div[@class='LinuxIdeMenuBar']";
+    public static final String WINDOWS_MAIN_MENU_2023_3 = "//div[@class='IdeJMenuBar']";
     public static final String WINDOWS_MAIN_MENU_2022_2_AND_NEWER = "//div[@class='IdeMenuBar']";
     public static final String WINDOWS_MAIN_MENU_2020_3_TO_2022_1 = "//div[@class='MenuFrameHeader']";
     public static final String WINDOWS_MAIN_MENU_2020_2_AND_OLDER = "//div[@class='CustomHeaderMenuBar']";
@@ -56,8 +57,10 @@ public class XPathDefinitions {
     public static final String MY_ICON_GEAR_PLAIN = "//div[contains(@myvisibleactions, 'View),')]//div[@myicon='gearPlain.svg']";
     public static final String MY_ICON_COLLAPSE_ALL = "//div[contains(@myvisibleactions, 'View),')]//div[@myicon='collapseall.svg']";
     public static final String MY_ICON_COLLAPSE_ALL_FOR = "//div[contains(@myvisibleactions, 'For')]//div[@myicon='collapseall.svg']";
+    public static final String MY_ICON_COLLAPSE_ALL_WINDOWS = "//div[@myicon='collapseAll.svg']";
     public static final String MY_ICON_COLLAPSE_ALL_IDE = "//div[contains(@myvisibleactions, 'IDE')]//div[@myicon='collapseall.svg']";
     public static final String MY_ICON_EXPAND_ALL = "//div[contains(@myvisibleactions, 'View),')]//div[@myicon='expandall.svg']";
+    public static final String MY_ICON_EXPAND_ALL_WINDOWS = "//div[@myicon='expandAll.svg']";
     public static final String MY_ICON_EXPAND_ALL_IDE = "//div[contains(@myvisibleactions, 'IDE')]//div[@myicon='expandall.svg']";
     public static final String MY_ICON_LOCATE_SVG = "//div[@myicon='locate.svg']";
     public static final String MY_ICON_REFRESH = "//div[@myicon='refresh.svg']";
@@ -78,6 +81,9 @@ public class XPathDefinitions {
     public static final String REMOVE_PROJECT_BUTTON = "//div[contains(@text.key, 'button.remove')]";
     public static final String REMOVE_PROJECT_BUTTON_20232 = "//div[@text='Remove']";
     public static final String REMOVE_FROM_LIST_BUTTON = "//div[@text='Remove From List']";
+    public static final String SHUTDOWN_BUTTON = "//div[@text='Shutdown']";
+    public static final String NOT_NOW_BUTTON = "//div[@text='Not Now']";
+
     public static final String SET_LANGUAGE = "//div[@class='SegmentedButtonComponent'][.//div[contains(@action.key, 'language.groovy')]]";
     public static final String SET_BUILD_SYSTEM = "//div[@class='SegmentedButtonComponent'][.//div[@visible_text='Maven']]";
     public static final String GET_SET_MODULE_NAME = "//div[@accessiblename='Module name:' and @accessiblename.key='label.project.wizard.new.project.module.name' and @class='JBTextField']";

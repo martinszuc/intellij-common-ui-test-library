@@ -66,7 +66,6 @@ public class MenuBar {
         JPopupMenuFixture lastContextMenu = allContextMenus.get(allContextMenus.size() - 1);
         lastContextMenu.findText((path[path.length - 1])).click();
     }
-
     private JButtonFixture mainMenuItem(String label) {
         if (remoteRobot.isMac()) {
             return null;

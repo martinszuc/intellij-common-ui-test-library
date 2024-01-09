@@ -27,8 +27,10 @@ import com.intellij.remoterobot.utils.UtilsKt;
 import com.intellij.remoterobot.utils.WaitForConditionTimeoutException;
 import com.redhat.devtools.intellij.commonuitest.UITestRunner;
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.errors.IdeFatalErrorsDialog;
+import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.information.RestartRequiredDialog;
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.information.TipDialog;
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.settings.SettingsDialog;
+import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.settings.pages.NewUiPage;
 import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.settings.pages.NotificationsPage;
 import com.redhat.devtools.intellij.commonuitest.utils.constants.ButtonLabels;
 import com.redhat.devtools.intellij.commonuitest.utils.steps.SharedSteps;
@@ -225,6 +227,32 @@ public class FlatWelcomeFrame extends CommonContainerFixture {
             JListFixture jListFixture = remoteRobot.find(JListFixture.class, byXpath(XPathDefinitions.JBLIST));
             jListFixture.clickItem(PROJECTS_BUTTON, false);
         }
+    }
+
+    public void disableNewUI(){
+        openSettingsDialog();
+        SettingsDialog settingsDialog = remoteRobot.find(SettingsDialog.class, Duration.ofSeconds(5));
+        settingsDialog.navigateTo("Appearance & Behavior", "New UI");
+        NewUiPage newUiPage = remoteRobot.find(NewUiPage.class, Duration.ofSeconds(5));
+
+        if(!newUiPage.isEnableNewUIChecked()){
+            settingsDialog.cancel();
+            return;
+        }
+
+        newUiPage.toggleEnableNewUI(false);
+        settingsDialog.apply();
+        RestartRequiredDialog restartRequiredDialog = remoteRobot.find(RestartRequiredDialog.class, Duration.ofSeconds(2));
+        restartRequiredDialog.shutdown();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        UITestRunner.runIde(intelliJVersion);
+
     }
 
     private int projectsCount() {

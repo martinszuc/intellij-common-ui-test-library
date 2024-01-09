@@ -46,6 +46,9 @@ public class LibraryTestBase {
             FlatWelcomeFrame flatWelcomeFrame = remoteRobot.find(FlatWelcomeFrame.class, Duration.ofSeconds(10));
             flatWelcomeFrame.disableNotifications();
             flatWelcomeFrame.preventTipDialogFromOpening();
+            if (ideaVersionInt >= 20232) {
+                flatWelcomeFrame.disableNewUI();
+            }
         }
     }
 

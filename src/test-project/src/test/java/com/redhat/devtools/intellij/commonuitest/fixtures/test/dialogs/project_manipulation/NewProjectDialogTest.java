@@ -280,7 +280,7 @@ public class NewProjectDialogTest extends LibraryTestBase {
     @EnabledIfSystemProperty(named = "uitestlib.idea.version", matches = "2020.|2021.")
     public void previousButtonTest() {
         newProjectFirstPage.selectNewProjectType(CreateCloseUtils.NewProjectType.PLAIN_JAVA.toString());
-        newProjectFirstPage.setProjectSdkIfAvailable("11");
+        newProjectFirstPage.setProjectSdkIfAvailable("17");
         assertThrows(UITestException.class, () ->
                 newProjectDialogWizard.previous(), "The 'UITestException' should be thrown because the 'Previous' button is not enabled on the first page of the 'New Project'.");
         newProjectDialogWizard.next();
@@ -298,7 +298,7 @@ public class NewProjectDialogTest extends LibraryTestBase {
     @EnabledIfSystemProperty(named = "uitestlib.idea.version", matches = "2020.|2021.")
     public void nextButtonTest() {
         newProjectFirstPage.selectNewProjectType(CreateCloseUtils.NewProjectType.PLAIN_JAVA.toString());
-        newProjectFirstPage.setProjectSdkIfAvailable("11");
+        newProjectFirstPage.setProjectSdkIfAvailable("17");
         newProjectDialogWizard.next();
         boolean isCommandLineAppTextPresent = listOfRemoteTextToString(newProjectFirstPage.findAllText()).contains("Command Line App");
         assertTrue(isCommandLineAppTextPresent, "The 'Command Line App' text should be present on the second page of the 'New Project' wizard for java project.");
@@ -311,7 +311,7 @@ public class NewProjectDialogTest extends LibraryTestBase {
     public void finishButtonTest() {
         if (UITestRunner.getIdeaVersionInt() < 20221) {
             newProjectFirstPage.selectNewProjectType(CreateCloseUtils.NewProjectType.PLAIN_JAVA.toString());
-            newProjectFirstPage.setProjectSdkIfAvailable("11");
+            newProjectFirstPage.setProjectSdkIfAvailable("17");
             assertThrows(UITestException.class, () ->
                     newProjectDialogWizard.finish(), "The 'UITestException' should be thrown because the 'Finish' button is not available on the first page of the 'New Project' wizard for java project.");
             newProjectDialogWizard.next();
@@ -333,10 +333,10 @@ public class NewProjectDialogTest extends LibraryTestBase {
 
     @Test
     public void setProjectSdkIfAvailableTest() {
-        newProjectFirstPage.setProjectSdkIfAvailable("8");
+        newProjectFirstPage.setProjectSdkIfAvailable("11");
         ComboBoxFixture projectJdkComboBox = newProjectFirstPage.find(ComboBoxFixture.class, byXpath(XPathDefinitions.JDK_COMBOBOX), Duration.ofSeconds(10));
         String currentlySelectedProjectSdk = listOfRemoteTextToString(projectJdkComboBox.findAllText());
-        assertTrue(currentlySelectedProjectSdk.contains("8"), "Selected project SDK should be Java 8 but is '" + currentlySelectedProjectSdk + "'");
+        assertTrue(currentlySelectedProjectSdk.contains("11"), "Selected project SDK should be Java 11 but is '" + currentlySelectedProjectSdk + "'");
         newProjectFirstPage.setProjectSdkIfAvailable("17");
         currentlySelectedProjectSdk = listOfRemoteTextToString(projectJdkComboBox.findAllText());
         assertTrue(currentlySelectedProjectSdk.contains("17"), "Selected project SDK should be Java 17 but is '" + currentlySelectedProjectSdk + "'");
