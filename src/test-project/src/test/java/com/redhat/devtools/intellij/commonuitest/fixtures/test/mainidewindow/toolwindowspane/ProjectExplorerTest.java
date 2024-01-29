@@ -43,6 +43,8 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 class ProjectExplorerTest extends LibraryTestBase {
     private static final String PROJECT_NAME = "pe_java_project";
+    private static final String FILE_NAME = ".gitignore";
+
     private static ProjectExplorer projectExplorer;
     private final Keyboard keyboard = new Keyboard(remoteRobot);
 
@@ -71,26 +73,26 @@ class ProjectExplorerTest extends LibraryTestBase {
 
     @Test
     public void isItemPresentTest() {
-        boolean isItemPresent = projectExplorer.isItemPresent(PROJECT_NAME, PROJECT_NAME + ".iml");
-        assertTrue(isItemPresent, "The file '" + PROJECT_NAME + ".iml' should be present in the project on location '" + PROJECT_NAME + "/" + PROJECT_NAME + ".iml' but is not.");
+        boolean isItemPresent = projectExplorer.isItemPresent(PROJECT_NAME, FILE_NAME);
+        assertTrue(isItemPresent, "The file '" + FILE_NAME + "' should be present in the project on location '" + PROJECT_NAME + "/" + FILE_NAME + "' but is not.");
     }
 
     @Test
     public void openFileTest() {
-        projectExplorer.openFile(PROJECT_NAME, PROJECT_NAME + ".iml");
+        projectExplorer.openFile(PROJECT_NAME, FILE_NAME);
         if (ideaVersionInt >= 20231) {       // Code for IJ 2023.1+
-            String projectLabelXpath = "//div[@accessiblename='" + PROJECT_NAME + ".iml' and @class='EditorTabLabel']//div[@class='ActionPanel']";
+            String projectLabelXpath = "//div[@accessiblename='" + FILE_NAME + "' and @class='EditorTabLabel']//div[@class='ActionPanel']";
             try {       // Verify file is opened by finding its tab in the editor
                 remoteRobot.find(ComponentFixture.class, byXpath(projectLabelXpath));
             } catch (Exception e) {
-                fail("The '" + PROJECT_NAME + ".iml' file should be opened but is not.");
+                fail("The '" + FILE_NAME + "' file should be opened but is not.");
             }
         } else {
             List<ContainerFixture> cfs = remoteRobot.findAll(ContainerFixture.class, byXpath(XPathDefinitions.SINGLE_HEIGHT_LABEL));
             ContainerFixture cf = cfs.get(cfs.size() - 1);
             String allText = TextUtils.listOfRemoteTextToString(cf.findAllText());
-            boolean isFileOpened = allText.contains(PROJECT_NAME + ".iml");
-            assertTrue(isFileOpened, "The '" + PROJECT_NAME + ".iml' file should be opened but is not.");
+            boolean isFileOpened = allText.contains(FILE_NAME);
+            assertTrue(isFileOpened, "The '" + FILE_NAME + "' file should be opened but is not.");
         }
     }
 
@@ -116,10 +118,10 @@ class ProjectExplorerTest extends LibraryTestBase {
 
     @Test
     public void selectOpenedFileTest() {
-        projectExplorer.openFile(PROJECT_NAME, PROJECT_NAME + ".iml");
+        projectExplorer.openFile(PROJECT_NAME, FILE_NAME);
         projectExplorer.projectViewTree().clickRow(0);
         projectExplorer.selectOpenedFile();
-        assertTrue(projectExplorer.projectViewTree().isPathSelected(projectExplorer.projectViewTree().getValueAtRow(0), PROJECT_NAME + ".iml"), "The file 'modules.xml' should be selected but is not.");
+        assertTrue(projectExplorer.projectViewTree().isPathSelected(projectExplorer.projectViewTree().getValueAtRow(0), FILE_NAME), "The file '" + FILE_NAME + "' should be selected but is not.");
     }
 
     @Test
