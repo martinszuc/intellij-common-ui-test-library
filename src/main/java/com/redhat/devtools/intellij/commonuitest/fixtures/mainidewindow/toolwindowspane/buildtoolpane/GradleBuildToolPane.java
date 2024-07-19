@@ -72,7 +72,7 @@ public class GradleBuildToolPane extends CommonContainerFixture {
      * Build the project
      */
     public void buildProject() {
-        waitFor(Duration.ofSeconds(30), Duration.ofSeconds(2), "The Gradle tasks tree did not appear in 30 seconds.", this::isGradleTreeVisible);
+        waitFor(Duration.ofSeconds(60), Duration.ofSeconds(5), "The Gradle tasks tree did not appear in 30 seconds.", this::isGradleTreeVisible);
 
         // ISSUE #199 - https://github.com/JetBrains/intellij-ui-test-robot/issues/199
         if (remoteRobot.isMac()) {
@@ -101,6 +101,6 @@ public class GradleBuildToolPane extends CommonContainerFixture {
 
     private boolean isGradleTreeVisible() {
         String treeContent = TextUtils.listOfRemoteTextToString(gradleTaskTree().findAllText());
-        return !treeContent.toLowerCase(Locale.ROOT).contains("nothing") && !treeContent.equals("");
+        return !treeContent.toLowerCase(Locale.ROOT).contains("loading") && !treeContent.equals("");
     }
 }
