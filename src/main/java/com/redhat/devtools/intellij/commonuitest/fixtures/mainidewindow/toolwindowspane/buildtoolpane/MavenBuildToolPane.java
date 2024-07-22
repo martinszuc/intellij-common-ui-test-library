@@ -25,8 +25,10 @@ import com.redhat.devtools.intellij.commonuitest.utils.constants.XPathDefinition
 import com.redhat.devtools.intellij.commonuitest.utils.texttranformation.TextUtils;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.time.Duration;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
 
 import static com.intellij.remoterobot.search.locators.Locators.byXpath;
 import static com.intellij.remoterobot.utils.RepeatUtilsKt.waitFor;
@@ -67,7 +69,28 @@ public class MavenBuildToolPane extends CommonContainerFixture {
      */
     public void buildProject(String lifecycle) {
         waitFor(Duration.ofSeconds(30), Duration.ofSeconds(2), "The Maven target tree did not appear in 30 seconds.", this::isMavenTreeVisible);
-        mavenTargetTree().expandAll();
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // Asynchronously expand all nodes to prevent UI freezing
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() {
+                mavenTargetTree().expandAll();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                latch.countDown(); // Release latch when done
+            }
+        }.execute();
+
+        // Wait for the expand operation to complete
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         mavenTargetTree().findAllText(lifecycle).get(0).doubleClick();
         if (UITestRunner.getIdeaVersionInt() >= 20221) {
             remoteRobot.find(ToolWindowPane.class).find(BuildView.class).waitUntilBuildHasFinished();

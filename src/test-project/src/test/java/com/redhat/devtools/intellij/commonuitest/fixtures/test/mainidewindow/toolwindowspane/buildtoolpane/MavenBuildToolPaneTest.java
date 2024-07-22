@@ -22,7 +22,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.*;
 import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -66,8 +68,21 @@ class MavenBuildToolPaneTest extends LibraryTestBase {
     }
 
     @Test
-    public void collapseAllTest() {
-        mavenBuildToolPane.mavenTargetTree().expandAll();
+    public void collapseAllTest() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // Asynchronously expand all nodes to prevent UI freezing
+        SwingUtilities.invokeLater(() -> {
+            try {
+                mavenBuildToolPane.mavenTargetTree().expandAll();
+            } finally {
+                latch.countDown(); // Release latch when done
+            }
+        });
+
+        // Wait for the expand operation to complete
+        latch.await();
+
         int itemsCountBeforeCollapsing = mavenBuildToolPane.mavenTargetTree().collectRows().size();
         mavenBuildToolPane.collapseAll();
         int itemsCountAfterCollapsing = mavenBuildToolPane.mavenTargetTree().collectRows().size();
