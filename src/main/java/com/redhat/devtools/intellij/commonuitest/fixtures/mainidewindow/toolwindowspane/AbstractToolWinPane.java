@@ -13,6 +13,7 @@ package com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.toolwin
 import com.intellij.remoterobot.RemoteRobot;
 import com.intellij.remoterobot.data.RemoteComponent;
 import com.intellij.remoterobot.fixtures.CommonContainerFixture;
+import com.intellij.remoterobot.fixtures.ComponentFixture;
 import com.intellij.remoterobot.fixtures.Fixture;
 import com.intellij.remoterobot.fixtures.JButtonFixture;
 import com.intellij.remoterobot.utils.WaitForConditionTimeoutException;
@@ -108,7 +109,7 @@ public abstract class AbstractToolWinPane extends CommonContainerFixture {
                 return button(byXpath(XPathDefinitions.TOOLTIP_TEXT_PROJECT), Duration.ofSeconds(2));
             }
         }
-        return button(byXpath(XPathDefinitions.label(label)), Duration.ofSeconds(2));
+        return button(byXpath(XPathDefinitions.toolWindowButton(label)), Duration.ofSeconds(2));
     }
 
     protected <T extends Fixture> T togglePane(String label, Class<T> fixtureClass, boolean openPane) {
@@ -140,7 +141,10 @@ public abstract class AbstractToolWinPane extends CommonContainerFixture {
     private void clickOnStripeButton(String label, boolean isPaneOpened) {
         waitFor(Duration.ofSeconds(30), Duration.ofSeconds(2), "The '" + label + "' stripe button is not available.", () -> isStripeButtonAvailable(label, isPaneOpened));
         if (UITestRunner.getIdeaVersionInt() >= 20221) {
-            remoteRobot.find(ToolWindowPane.class, Duration.ofSeconds(10)).stripeButton(label, isPaneOpened).click();
+//            ToolWindowPane toolwinPane = remoteRobot.find(ToolWindowPane.class, Duration.ofSeconds(10));
+            ToolWindowRightToolbar toolWindowRightToolbar = remoteRobot.find(ToolWindowRightToolbar.class, Duration.ofSeconds(2));
+            toolWindowRightToolbar.stripeButton(label,isPaneOpened).click();
+//            toolwinPane.stripeButton(label, isPaneOpened).click();
         } else {
             remoteRobot.find(ToolWindowsPane.class, Duration.ofSeconds(10)).stripeButton(label, isPaneOpened).click();
         }
@@ -149,7 +153,7 @@ public abstract class AbstractToolWinPane extends CommonContainerFixture {
     private boolean isStripeButtonAvailable(String label, boolean isPaneOpened) {
         try {
             if (UITestRunner.getIdeaVersionInt() >= 20221) {
-                remoteRobot.find(ToolWindowPane.class, Duration.ofSeconds(2)).stripeButton(label, isPaneOpened);
+                remoteRobot.find(ToolWindowRightToolbar.class, Duration.ofSeconds(2)).stripeButton(label, isPaneOpened);
             } else {
                 remoteRobot.find(ToolWindowsPane.class, Duration.ofSeconds(2)).stripeButton(label, isPaneOpened);
             }

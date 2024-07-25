@@ -83,7 +83,7 @@ public class MavenBuildToolPane extends CommonContainerFixture {
      * @return Maven Tab tree fixture
      */
     public JTreeFixture mavenTargetTree() {
-        return find(JTreeFixture.class, JTreeFixture.Companion.byType(), Duration.ofSeconds(10));
+        return find(JTreeFixture.class, byXpath("//div[@class='SimpleTree']"), Duration.ofSeconds(10));
     }
 
     private boolean isMavenTreeVisible() {
