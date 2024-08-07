@@ -24,6 +24,7 @@ import com.redhat.devtools.intellij.commonuitest.fixtures.dialogs.project.pages.
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.MainIdeWindow;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.idestatusbar.IdeStatusBar;
 import com.redhat.devtools.intellij.commonuitest.utils.constants.XPathDefinitions;
+import com.redhat.devtools.intellij.commonuitest.utils.screenshot.ScreenshotUtils;
 
 import java.io.File;
 import java.time.Duration;
@@ -100,10 +101,11 @@ public class CreateCloseUtils {
     public static void createEmptyProject(RemoteRobot remoteRobot, String projectName) {
         NewProjectDialogWizard newProjectDialogWizard = openNewProjectDialogFromWelcomeDialog(remoteRobot);
         NewProjectFirstPage newProjectFirstPage = newProjectDialogWizard.find(NewProjectFirstPage.class, Duration.ofSeconds(10));
-
+        ScreenshotUtils.takeScreenshot(remoteRobot, "1_before_wait");
         waitForDialogsToDisappear(remoteRobot, Duration.ofSeconds(20));
-
+        ScreenshotUtils.takeScreenshot(remoteRobot, "2_before_empty_project");
         newProjectFirstPage.selectNewProjectType(NewProjectType.EMPTY_PROJECT.toString());
+        ScreenshotUtils.takeScreenshot(remoteRobot, "3_before_empty_project");
 
         newProjectFirstPage.setProjectName(projectName);
         newProjectFirstPage.setProjectLocation(PROJECT_LOCATION);
