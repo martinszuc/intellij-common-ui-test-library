@@ -14,6 +14,7 @@ import com.redhat.devtools.intellij.commonuitest.AbstractLibraryBaseTest;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.toolwindowspane.BuildView;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.toolwindowspane.ToolWindowPane;
 import com.redhat.devtools.intellij.commonuitest.fixtures.mainidewindow.toolwindowspane.buildtoolpane.MavenBuildToolPane;
+import com.redhat.devtools.intellij.commonuitest.utils.constants.UITestTimeouts;
 import com.redhat.devtools.intellij.commonuitest.utils.project.CreateCloseUtils;
 import com.redhat.devtools.intellij.commonuitest.utils.project.NewProjectType;
 import org.junit.jupiter.api.AfterAll;
@@ -38,10 +39,10 @@ class MavenBuildToolPaneTest extends AbstractLibraryBaseTest {
     @BeforeAll
     static void prepareProject() {
         CreateCloseUtils.createNewProject(remoteRobot, PROJECT_NAME, NewProjectType.MAVEN);
-        toolWinPane = remoteRobot.find(ToolWindowPane.class, Duration.ofSeconds(10));
+        toolWinPane = remoteRobot.find(ToolWindowPane.class, UITestTimeouts.FIXTURE_TIMEOUT);
         toolWinPane.closeProjectExplorer();
         toolWinPane.openMavenBuildToolPane();
-        mavenBuildToolPane = toolWinPane.find(MavenBuildToolPane.class, Duration.ofSeconds(10));
+        mavenBuildToolPane = toolWinPane.find(MavenBuildToolPane.class, UITestTimeouts.FIXTURE_TIMEOUT);
     }
 
     @AfterAll
@@ -52,7 +53,7 @@ class MavenBuildToolPaneTest extends AbstractLibraryBaseTest {
     @Test
     void buildProject() {
         mavenBuildToolPane.buildProject("verify", PROJECT_NAME);
-        BuildView buildView = toolWinPane.find(BuildView.class, Duration.ofSeconds(5));
+        BuildView buildView = toolWinPane.find(BuildView.class, UITestTimeouts.SHORT_TIMEOUT);
         buildView.waitUntilBuildHasFinished();
         assertTrue(buildView.isBuildSuccessful(), "The build should be successful but is not.");
     }
