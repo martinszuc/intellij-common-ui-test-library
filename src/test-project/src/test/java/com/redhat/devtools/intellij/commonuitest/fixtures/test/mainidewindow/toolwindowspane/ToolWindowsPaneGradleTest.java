@@ -51,6 +51,7 @@ class ToolWindowsPaneGradleTest extends AbstractLibraryBaseTest {
 
     @Test
     void gradleTest() {
+        toolWinPane.closeProjectExplorer();
         toolWinPane.openGradleBuildToolPane();
         GradleBuildToolPane gradleBuildToolPane = toolWinPane.find(GradleBuildToolPane.class, Duration.ofSeconds(10));
         gradleBuildToolPane.buildProject("build");

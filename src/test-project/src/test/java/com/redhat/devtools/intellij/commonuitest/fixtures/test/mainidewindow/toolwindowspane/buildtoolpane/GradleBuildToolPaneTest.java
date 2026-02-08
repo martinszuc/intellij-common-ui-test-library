@@ -38,6 +38,7 @@ class GradleBuildToolPaneTest extends AbstractLibraryBaseTest {
     static void prepareProject() {
         CreateCloseUtils.createNewProject(remoteRobot, PROJECT_NAME, NewProjectType.GRADLE);
         toolWinPane = remoteRobot.find(ToolWindowPane.class, Duration.ofSeconds(10));
+        toolWinPane.closeProjectExplorer();
         toolWinPane.openGradleBuildToolPane();
         gradleBuildToolPane = toolWinPane.find(GradleBuildToolPane.class, Duration.ofSeconds(10));
     }

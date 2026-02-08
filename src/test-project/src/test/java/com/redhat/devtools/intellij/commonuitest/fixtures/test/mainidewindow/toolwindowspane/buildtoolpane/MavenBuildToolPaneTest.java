@@ -39,6 +39,7 @@ class MavenBuildToolPaneTest extends AbstractLibraryBaseTest {
     static void prepareProject() {
         CreateCloseUtils.createNewProject(remoteRobot, PROJECT_NAME, NewProjectType.MAVEN);
         toolWinPane = remoteRobot.find(ToolWindowPane.class, Duration.ofSeconds(10));
+        toolWinPane.closeProjectExplorer();
         toolWinPane.openMavenBuildToolPane();
         mavenBuildToolPane = toolWinPane.find(MavenBuildToolPane.class, Duration.ofSeconds(10));
     }

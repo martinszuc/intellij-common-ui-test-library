@@ -51,6 +51,7 @@ class ToolWindowsPaneMavenTest extends AbstractLibraryBaseTest {
 
     @Test
     void mavenBuildTest() {
+        toolWinPane.closeProjectExplorer();
         toolWinPane.openMavenBuildToolPane();
         MavenBuildToolPane mavenBuildToolPane = toolWinPane.find(MavenBuildToolPane.class, Duration.ofSeconds(10));
         mavenBuildToolPane.buildProject("verify", PROJECT_NAME);
